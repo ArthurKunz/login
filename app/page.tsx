@@ -7,6 +7,7 @@ import { supabase } from '../utils/supabase/client'
 export default function SignUpForm() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [code, setCode] = useState('')
   const [step, setStep] = useState<'signup' | 'verify'>('signup')
 
   // Step 1: Send the email/password to Supabase
@@ -18,6 +19,21 @@ export default function SignUpForm() {
     })
     if (error) alert(error.message)
     else setStep('verify')
+  }
+
+  const handleVerify = async (e: React.FormEvent) => {
+    e.preventDefault()
+    const { error } = await supabase.auth.verifyOtp({
+      email: email,
+      token: code,
+      type: 'signup',
+    })
+
+    if (error) {
+      alert('Wrong code! ' + error.message) 
+    } else {
+      alert('Verification succesful! You are now a real user!')
+    }
   }
 
   return (
@@ -41,10 +57,16 @@ export default function SignUpForm() {
           <button className="bg-blue-500 text-white p-2 rounded">Sign Up</button>
         </form>
       ) : (
-        <div className='flex flex-col items-center h-200 w-full bg-blue-300'> 
-          <span>{ email }</span>
-          <span>{ password }</span>
-        </div>
+        <form onSubmit={handleVerify} className='flex flex-col gap-4'>
+          <input
+            type="text"
+            placeholder="6-digit code"
+            className="p-2 border"
+            onChange={(e) => setCode(e.target.value)}
+            required
+          />
+          <button className="bg-green-500 text-white p-2 rounded">Verify</button>
+        </form>
       )}
     </div>
   )
