@@ -1,7 +1,7 @@
 // components/SignUpForm.tsx
 'use client'
 
-import { useState} from 'react'
+import { useState, useEffect } from 'react'
 import { supabase } from '../utils/supabase/client'
 
 export default function SignUpForm() {
@@ -9,6 +9,21 @@ export default function SignUpForm() {
   const [password, setPassword] = useState('')
   const [code, setCode] = useState('')
   const [step, setStep] = useState<'signup' | 'verify' | 'signin' | 'home'>('signin')
+  const [user, setUser] = useState<any>(null)
+
+
+
+  useEffect (() => {
+    const checkUser = async () => {
+      const { data: { session } } = await supabase.auth.getSession()
+
+      if (session) {
+        setStep('home')
+        setUser(session.user)
+      }
+    }
+    checkUser()
+  }, [])
 
 
 
@@ -62,6 +77,7 @@ export default function SignUpForm() {
       alert(error.message)
     } else {
       console.log('Logged out successfully!')
+      setUser(null)
       setStep('signin')
     }
   }
