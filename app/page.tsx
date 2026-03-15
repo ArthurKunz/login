@@ -36,6 +36,8 @@ export default function SignUpForm() {
     })
     if (error) alert(error.message)
     else setStep('verify')
+    setPassword('')
+    setEmail('')
   }
 
   //verify the code sent to the user's email
@@ -66,6 +68,8 @@ export default function SignUpForm() {
       else {
         console.log('Sign in successful! Welcome back!')
         setStep('home')
+        setPassword('')
+        setEmail('')
       }
   }
 
@@ -79,6 +83,8 @@ export default function SignUpForm() {
       console.log('Logged out successfully!')
       setUser(null)
       setStep('signin')
+      setPassword('')
+      setEmail('')
     }
   }
 
@@ -93,15 +99,19 @@ export default function SignUpForm() {
         <form onSubmit={handleSignUp} className={`flex-col gap-4 ${step === 'signup' ? 'flex' : 'hidden'}`}>
           <h2 className='text-lg font-bold'>Sign Up</h2>
           <input 
+            key="signup-email"
             type="email" 
             placeholder="Email"
+            value={email}
             className="p-2 border" 
             onChange={(e) => setEmail(e.target.value)} 
             required 
           />
           <input 
+            key="signup-password"
             type="password" 
             placeholder="Password" 
+            value={password}
             className="p-2 border" 
             onChange={(e) => setPassword(e.target.value)} 
             required 
@@ -115,15 +125,19 @@ export default function SignUpForm() {
         <form onSubmit={handleSignIn} className={`flex-col gap-4 ${step === 'signin' ? 'flex' : 'hidden'}`}>
           <h2 className='text-lg font-bold'>login</h2>
           <input
+            key="signin-email"
             type='email'
             placeholder='Email'
+            value={email}
             className='p-2 border'
             onChange={(e) => setEmail(e.target.value)}
             required
           />
           <input
+            key="signin-password"
             type='password'
             placeholder='Password'
+            value={password}
             className='p-2 border'
             onChange={(e) => setPassword(e.target.value)}
             required
@@ -136,6 +150,7 @@ export default function SignUpForm() {
 
         <form onSubmit={handleVerify} className={`flex-col gap-4 ${step === 'verify' ? 'flex' : 'hidden'}`}>
           <input
+            key='verify-code'
             type="text"
             placeholder="6-digit code"
             className="p-2 border"
