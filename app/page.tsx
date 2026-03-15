@@ -1,14 +1,16 @@
 // components/SignUpForm.tsx
 'use client'
 
-import { useState } from 'react'
+import { useState} from 'react'
 import { supabase } from '../utils/supabase/client'
 
 export default function SignUpForm() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [code, setCode] = useState('')
-  const [step, setStep] = useState<'signup' | 'verify' | 'signin'>('signin')
+  const [step, setStep] = useState<'signup' | 'verify' | 'signin' | 'home'>('signin')
+
+
 
   // Step 1: Send the email/password to Supabase
   const handleSignUp = async (e: React.FormEvent) => {
@@ -33,11 +35,12 @@ export default function SignUpForm() {
     if (error) {
       alert('Wrong code! ' + error.message) 
     } else {
-      alert('Verification succesful! You are now a real user!')
+      console.log('Verification succesful! You are now a real user!')
+      setStep('home')
     }
   }
 
-
+  // Step 2: Sign in the user with email/password
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault()
     const { error } = await supabase.auth.signInWithPassword ({
@@ -45,8 +48,24 @@ export default function SignUpForm() {
       password
     })
     if (error) alert(error.message)
-      else alert('Sign in successful! Welcome back!')
+      else {
+        console.log('Sign in successful! Welcome back!')
+        setStep('home')
+      }
   }
+
+
+  const handleLogout = async () => {
+    const { error } = await supabase.auth.signOut()
+
+    if (error) {
+      alert(error.message)
+    } else {
+      console.log('Logged out successfully!')
+      setStep('signin')
+    }
+  }
+
 
 
 
@@ -56,9 +75,10 @@ export default function SignUpForm() {
 
 
         <form onSubmit={handleSignUp} className={`flex-col gap-4 ${step === 'signup' ? 'flex' : 'hidden'}`}>
+          <h2 className='text-lg font-bold'>Sign Up</h2>
           <input 
             type="email" 
-            placeholder="Email" 
+            placeholder="Email"
             className="p-2 border" 
             onChange={(e) => setEmail(e.target.value)} 
             required 
@@ -71,6 +91,7 @@ export default function SignUpForm() {
             required 
           />
           <button className="bg-blue-500 text-white p-2 rounded">Sign Up</button>
+          <span>Already have an account? <span className="text-blue-500 underline cursor-pointer" onClick={() => setStep('signin')}>Sign In</span></span>
         </form>
 
 
@@ -91,7 +112,8 @@ export default function SignUpForm() {
             onChange={(e) => setPassword(e.target.value)}
             required
           />
-          <button className="bg-blue-500 text-white p-2 rounded">Sign In</button>
+          <button className='bg-blue-500 text-white p-2 rounded'>Sign In</button>
+          <span>Don't have an account? <span className="text-blue-500 underline cursor-pointer" onClick={() => setStep('signup')}>Sign Up</span></span>
         </form>
 
 
@@ -106,6 +128,14 @@ export default function SignUpForm() {
           />
           <button className="bg-green-500 text-white p-2 rounded">Verify</button>
         </form>
+
+
+
+        <div className={`w-full h-auto bg-blue-500 flex-col py-10 px-10 gap-5 items-center ${step === 'home' ? 'flex' : 'hidden'}`}>
+          <h1 className='text-3xl text-blue-800 font-bold'>Homepage</h1>
+          <button onClick={() => handleLogout()} className='cursor-pointer bg-blue-200 w-full text-white p-2 rounded'>Logout</button>
+          <button className='bg-blue-200 w-full text-white p-2 rounded'>Delete Account</button>
+        </div>
 
 
 
