@@ -8,10 +8,35 @@ export default function SignUpForm() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [code, setCode] = useState('')
-  const [step, setStep] = useState<'signup' | 'verify' | 'signin' | 'home'>('signin')
+  const [step, setStep] = useState<'signup' | 'verify' | 'signin' | 'home' | 'changePassword'>('signup')
   const [user, setUser] = useState<any>(null)
+  const [newPassword, setNewPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
 
 
+
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    if (newPassword !== confirmPassword) {
+      alert('Passwords do not match!')
+      return
+    }
+
+    const { error } = await supabase.auth.updateUser({
+      password: newPassword,
+    })
+
+    if (error) {
+      alert(error.message)
+    } else {
+      alert('Password changed successfully!')
+      // Clear the fields and go back home
+      setNewPassword('')
+      setConfirmPassword('')
+      setStep('home')
+    }
+  }
 
   useEffect (() => {
     const checkUser = async () => {
@@ -34,10 +59,11 @@ export default function SignUpForm() {
       email,
       password,
     })
-    if (error) alert(error.message)
-    else setStep('verify')
-    setPassword('')
-    setEmail('')
+    if (error) { alert(error.message) 
+      alert(error.message) 
+    } else { setStep('verify') 
+      setStep('verify') 
+    }
   }
 
   //verify the code sent to the user's email
@@ -52,7 +78,7 @@ export default function SignUpForm() {
     if (error) {
       alert('Wrong code! ' + error.message) 
     } else {
-      console.log('Verification succesful! You are now a real user!')
+      alert('Verification succesful! You are now a real user!')
       setStep('home')
     }
   }
@@ -68,12 +94,22 @@ export default function SignUpForm() {
       else {
         console.log('Sign in successful! Welcome back!')
         setStep('home')
-        setPassword('')
-        setEmail('')
       }
   }
 
 
+  const handleGoogleSignIn = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: window.location.origin, // sends user back to your app after Google login
+      },
+    })
+    if (error) alert(error.message)
+  }
+
+
+  // Step 3: Sign out the user
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut()
 
@@ -83,11 +119,22 @@ export default function SignUpForm() {
       console.log('Logged out successfully!')
       setUser(null)
       setStep('signin')
-      setPassword('')
-      setEmail('')
     }
   }
 
+
+
+  const handleDeleteAccount = async () => {
+    if (confirm("Permanently delete account?")) {
+      const { error } = await supabase.rpc('delete_self')
+      if (error) {
+        alert(error.message)
+      } else {
+        handleLogout();
+        setStep('signup')
+      }
+    }
+  }
 
 
 
@@ -117,6 +164,7 @@ export default function SignUpForm() {
             required 
           />
           <button className="bg-blue-500 text-white p-2 rounded">Sign Up</button>
+          <button type="button" onClick={handleGoogleSignIn} className="bg-white border p-2 rounded w-full">Sign up with Google</button>
           <span>Already have an account? <span className="text-blue-500 underline cursor-pointer" onClick={() => setStep('signin')}>Sign In</span></span>
         </form>
 
@@ -143,6 +191,7 @@ export default function SignUpForm() {
             required
           />
           <button className='bg-blue-500 text-white p-2 rounded'>Sign In</button>
+          <button type="button" onClick={handleGoogleSignIn} className="bg-white border p-2 rounded w-full">Sign in with Google</button>
           <span>Don't have an account? <span className="text-blue-500 underline cursor-pointer" onClick={() => setStep('signup')}>Sign Up</span></span>
         </form>
 
@@ -150,9 +199,9 @@ export default function SignUpForm() {
 
         <form onSubmit={handleVerify} className={`flex-col gap-4 ${step === 'verify' ? 'flex' : 'hidden'}`}>
           <input
-            key='verify-code'
             type="text"
-            placeholder="6-digit code"
+            placeholder="8-digit code"
+            value={code}
             className="p-2 border"
             onChange={(e) => setCode(e.target.value)}
             required
@@ -165,11 +214,31 @@ export default function SignUpForm() {
         <div className={`w-full h-auto bg-blue-500 flex-col py-10 px-10 gap-5 items-center ${step === 'home' ? 'flex' : 'hidden'}`}>
           <h1 className='text-3xl text-blue-800 font-bold'>Homepage</h1>
           <button onClick={() => handleLogout()} className='cursor-pointer bg-blue-200 w-full text-white p-2 rounded'>Logout</button>
-          <button className='bg-blue-200 w-full text-white p-2 rounded'>Delete Account</button>
+          <button onClick={() => handleDeleteAccount()} className='cursor-pointer bg-red-500 w-full text-white p-2 rounded'>Delete Account</button>
+          <button onClick={() => setStep('changePassword')} className='cursor-pointer bg-blue-200 w-full text-white p-2 rounded'>Change Password</button>
         </div>
 
-
-
+        <form onSubmit={handleChangePassword} className={`flex-col gap-4 ${step === 'changePassword' ? 'flex' : 'hidden'}`}>
+          <h2 className='text-lg font-bold'>Change Password</h2>
+          <input
+            type='password'
+            placeholder='New Password'
+            value={newPassword}
+            className='p-2 border'
+            onChange={(e) => setNewPassword(e.target.value)}
+            required
+          />
+          <input
+            type='password'
+            placeholder='Confirm New Password'
+            value={confirmPassword}
+            className='p-2 border'
+            onChange={(e) => setConfirmPassword(e.target.value)}
+            required
+          />
+          <button className='bg-blue-500 text-white p-2 rounded'>Save New Password</button>
+          <span className='text-blue-500 underline cursor-pointer' onClick={() => setStep('home')}>Cancel</span>
+        </form>
     </div>
   )
 }
