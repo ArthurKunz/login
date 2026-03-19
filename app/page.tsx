@@ -8,10 +8,74 @@ export default function SignUpForm() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [code, setCode] = useState('')
-  const [step, setStep] = useState<'signup' | 'verify' | 'signin' | 'home' | 'changePassword'>('signup')
+  const [step, setStep] = useState<'signup' | 'verify' | 'signin' | 'profile' |'home' | 'changePassword'>('signup')
   const [user, setUser] = useState<any>(null)
   const [newPassword, setNewPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
+
+  const [username, setUsername] = useState('')
+  const [age, setAge] = useState('')
+  const [profile, setProfile] = useState<{ username: string; age: number } | null>(null)
+
+
+
+
+  const fetchProfile = async (userId: string) => {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('username, age')
+      .eq('id', userId)
+      .single()
+
+    if (data) {
+      setProfile(data)
+    }
+  }
+
+
+
+  const handleProfileSetup = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session) {
+      alert('Not logged in.')
+      return
+    }
+
+    const { error } = await supabase.from('profiles').insert({
+      id: session.user.id,
+      username,
+      age: parseInt(age),
+    })
+
+    if (error) {
+      // Supabase returns a specific error code for unique constraint violations
+      if (error.code === '23505') {
+        alert('That username is already taken. Please choose another.')
+      } else {
+        alert(error.message)
+      }
+    } else {
+      setUser(session.user)
+      await fetchProfile(session.user.id)
+      setStep('home')
+    }
+  }
+
+
+
+  useEffect(() => {
+    const checkUser = async () => {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (session) {
+        setUser(session.user)
+        await fetchProfile(session.user.id)
+        setStep('home')
+      }
+    }
+    checkUser()
+  }, [])
 
 
 
@@ -37,6 +101,8 @@ export default function SignUpForm() {
       setStep('home')
     }
   }
+
+
 
   useEffect (() => {
     const checkUser = async () => {
@@ -79,7 +145,7 @@ export default function SignUpForm() {
       alert('Wrong code! ' + error.message) 
     } else {
       alert('Verification succesful! You are now a real user!')
-      setStep('home')
+      setStep('profile')
     }
   }
 
@@ -210,9 +276,22 @@ export default function SignUpForm() {
         </form>
 
 
+      <form onSubmit={handleProfileSetup} className={`flex-col gap-4 ${step === 'profile' ? 'flex' : 'hidden'}`}>
+        <h2 className='text-lg font-bold'>Set up your profile</h2>
+        <input type="text" placeholder="Username" value={username} className="p-2 border" onChange={(e) => setUsername(e.target.value)} required />
+        <input type="number" placeholder="Age" value={age} className="p-2 border" min={1} max={120} onChange={(e) => setAge(e.target.value)} required />
+        <button className="bg-blue-500 text-white p-2 rounded">Save & Continue</button>
+      </form>
+        
 
         <div className={`w-full h-auto bg-blue-500 flex-col py-10 px-10 gap-5 items-center ${step === 'home' ? 'flex' : 'hidden'}`}>
           <h1 className='text-3xl text-blue-800 font-bold'>Homepage</h1>
+          {profile && (
+            <div className="bg-white text-black w-full p-3 rounded">
+              <p><strong>Username:</strong> {profile.username}</p>
+              <p><strong>Age:</strong> {profile.age}</p>
+            </div>
+          )}
           <button onClick={() => handleLogout()} className='cursor-pointer bg-blue-200 w-full text-white p-2 rounded'>Logout</button>
           <button onClick={() => handleDeleteAccount()} className='cursor-pointer bg-red-500 w-full text-white p-2 rounded'>Delete Account</button>
           <button onClick={() => setStep('changePassword')} className='cursor-pointer bg-blue-200 w-full text-white p-2 rounded'>Change Password</button>
