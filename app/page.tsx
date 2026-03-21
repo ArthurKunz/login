@@ -8,7 +8,7 @@ export default function SignUpForm() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [code, setCode] = useState('')
-  const [step, setStep] = useState<'signup' | 'verify' | 'signin' | 'profile' |'home' | 'changePassword'>('signup')
+  const [step, setStep] = useState<'signup' | 'verify' | 'signin' | 'profile' | 'changeData' | 'home' | 'changePassword'>('signup')
   const [user, setUser] = useState<any>(null)
   const [newPassword, setNewPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
@@ -169,6 +169,37 @@ export default function SignUpForm() {
 
 
 
+  const handleChangeData = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session) {
+      alert ('not loged in')
+      return
+    }
+
+    const { error } = await supabase.from('profiles')
+    .update({
+      username: username,
+      firstname: firstname,
+      surname: surname,
+      age: age,
+      gradelevel: gradelevel,
+      averagemark: averagemark,
+    })
+    .eq('id', session.user.id)
+
+    if (error) {
+      alert(error.message)
+    } else {
+      setUser(session.user)
+      await fetchProfile(session.user.id)
+      setStep('home')
+    }
+  }
+
+
+
   const fetchProfile = async (userId: string) => {
     const { data, error } = await supabase
       .from('profiles')
@@ -178,6 +209,12 @@ export default function SignUpForm() {
 
     if (data) {
       setProfile(data)
+      setUsername(data.username)
+      setFirstname(data.firstname)
+      setSurname(data.surname)
+      setAge(String(data.age))
+      setGradelevel(String(data.gradelevel))
+      setAveragemark(String(data.averagemark))
       setStep('home')
     } else {
       setStep('profile')
@@ -283,6 +320,18 @@ export default function SignUpForm() {
         <input type="number" placeholder="Notendurchschnitt" value={averagemark} className="p-2 border" step="0.1" min={0.8} max={6} onChange={(e) => setAveragemark(e.target.value)} required />
         <button className="bg-blue-500 text-white p-2 rounded">Save & Continue</button>
       </form>
+
+
+      <form onSubmit={handleChangeData} className={`flex-col gap-4 ${step === 'changeData' ? 'flex' : 'hidden'}`}>
+        <h2 className='text-lg font-bold'>Set up your profile</h2>
+        <input type="text" placeholder="Username" value={username} className="p-2 border" onChange={(e) => setUsername(e.target.value)} required />
+        <input type="text" placeholder="Vorname" value={firstname} className="p-2 border" min={1} max={120} onChange={(e) => setFirstname(e.target.value)} required />
+        <input type="text" placeholder="Nachname" value={surname} className="p-2 border" onChange={(e) => setSurname(e.target.value)} required />
+        <input type="number" placeholder="Alter" value={age} className="p-2 border" min={1} max={120} onChange={(e) => setAge(e.target.value)} required />
+        <input type="number" placeholder="Klassenstufe" value={gradelevel} className="p-2 border" onChange={(e) => setGradelevel(e.target.value)} required />
+        <input type="number" placeholder="Notendurchschnitt" value={averagemark} className="p-2 border" step="0.1" min={0.8} max={6} onChange={(e) => setAveragemark(e.target.value)} required />
+        <button className="bg-blue-500 text-white p-2 rounded">Save & Continue</button>
+      </form>
         
 
         <div className={`w-full h-auto bg-blue-500 flex-col py-10 px-10 gap-5 items-center ${step === 'home' ? 'flex' : 'hidden'}`}>
@@ -300,6 +349,7 @@ export default function SignUpForm() {
           <button onClick={() => handleLogout()} className='cursor-pointer bg-blue-200 w-full text-white p-2 rounded'>Logout</button>
           <button onClick={() => handleDeleteAccount()} className='cursor-pointer bg-red-500 w-full text-white p-2 rounded'>Delete Account</button>
           <button onClick={() => setStep('changePassword')} className='cursor-pointer bg-blue-200 w-full text-white p-2 rounded'>Change Password</button>
+          <button onClick={() => setStep('changeData')} className='cursor-pointer bg-blue-200 w-full text-white p-2 rounded'>Change Data</button>
         </div>
 
         <form onSubmit={handleChangePassword} className={`flex-col gap-4 ${step === 'changePassword' ? 'flex' : 'hidden'}`}>
