@@ -12,10 +12,14 @@ export default function SignUpForm() {
   const [user, setUser] = useState<any>(null)
   const [newPassword, setNewPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
-  const [profile, setProfile] = useState<{ username: string; age: number } | null>(null)
 
+  const [profile, setProfile] = useState<{ username: string; firstname: string; surname: string; age: number; gradelevel: number; averagemark: number;} | null>(null)
   const [username, setUsername] = useState('')
+  const [firstname, setFirstname] = useState('')
+  const [surname, setSurname] = useState('')
   const [age, setAge] = useState('')
+  const [gradelevel, setGradelevel] = useState('')
+  const [averagemark, setAveragemark] = useState('')
 
 
 
@@ -73,7 +77,7 @@ export default function SignUpForm() {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: window.location.origin, // sends user back to your app after Google login
+        redirectTo: window.location.origin,
       },
     })
     if (error) alert(error.message)
@@ -143,7 +147,11 @@ export default function SignUpForm() {
     const { error } = await supabase.from('profiles').insert({
       id: session.user.id,
       username,
+      firstname,
+      surname,
       age: parseInt(age),
+      gradelevel: parseInt(gradelevel),
+      averagemark: parseFloat(averagemark),
     })
 
     if (error) {
@@ -164,7 +172,7 @@ export default function SignUpForm() {
   const fetchProfile = async (userId: string) => {
     const { data, error } = await supabase
       .from('profiles')
-      .select('username, age')
+      .select('username, firstname, surname, age, gradelevel, averagemark')
       .eq('id', userId)
       .single()
 
@@ -268,7 +276,11 @@ export default function SignUpForm() {
       <form onSubmit={handleProfileSetup} className={`flex-col gap-4 ${step === 'profile' ? 'flex' : 'hidden'}`}>
         <h2 className='text-lg font-bold'>Set up your profile</h2>
         <input type="text" placeholder="Username" value={username} className="p-2 border" onChange={(e) => setUsername(e.target.value)} required />
-        <input type="number" placeholder="Age" value={age} className="p-2 border" min={1} max={120} onChange={(e) => setAge(e.target.value)} required />
+        <input type="text" placeholder="Vorname" value={firstname} className="p-2 border" min={1} max={120} onChange={(e) => setFirstname(e.target.value)} required />
+        <input type="text" placeholder="Nachname" value={surname} className="p-2 border" onChange={(e) => setSurname(e.target.value)} required />
+        <input type="number" placeholder="Alter" value={age} className="p-2 border" min={1} max={120} onChange={(e) => setAge(e.target.value)} required />
+        <input type="number" placeholder="Klassenstufe" value={gradelevel} className="p-2 border" onChange={(e) => setGradelevel(e.target.value)} required />
+        <input type="number" placeholder="Notendurchschnitt" value={averagemark} className="p-2 border" step="0.1" min={0.8} max={6} onChange={(e) => setAveragemark(e.target.value)} required />
         <button className="bg-blue-500 text-white p-2 rounded">Save & Continue</button>
       </form>
         
@@ -278,7 +290,11 @@ export default function SignUpForm() {
           {profile && (
             <div className="bg-white text-black w-full p-3 rounded">
               <p><strong>Username:</strong> {profile.username}</p>
+              <p><strong>Vorname</strong> {profile.firstname}</p>
+              <p><strong>Nachname:</strong> {profile.surname}</p>
               <p><strong>Age:</strong> {profile.age}</p>
+              <p><strong>Gradelevel:</strong> {profile.gradelevel}</p>
+              <p><strong>Averagemark:</strong> {profile.averagemark}</p>
             </div>
           )}
           <button onClick={() => handleLogout()} className='cursor-pointer bg-blue-200 w-full text-white p-2 rounded'>Logout</button>
