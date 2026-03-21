@@ -12,127 +12,30 @@ export default function SignUpForm() {
   const [user, setUser] = useState<any>(null)
   const [newPassword, setNewPassword] = useState('')
   const [confirmPassword, setConfirmPassword] = useState('')
+  const [profile, setProfile] = useState<{ username: string; age: number } | null>(null)
 
   const [username, setUsername] = useState('')
   const [age, setAge] = useState('')
-  const [profile, setProfile] = useState<{ username: string; age: number } | null>(null)
 
 
 
 
-  const fetchProfile = async (userId: string) => {
-    const { data, error } = await supabase
-      .from('profiles')
-      .select('username, age')
-      .eq('id', userId)
-      .single()
-
-    if (data) {
-      setProfile(data)
-    }
-  }
-
-
-
-  const handleProfileSetup = async (e: React.FormEvent) => {
-    e.preventDefault()
-
-    const { data: { session } } = await supabase.auth.getSession()
-    if (!session) {
-      alert('Not logged in.')
-      return
-    }
-
-    const { error } = await supabase.from('profiles').insert({
-      id: session.user.id,
-      username,
-      age: parseInt(age),
-    })
-
-    if (error) {
-      // Supabase returns a specific error code for unique constraint violations
-      if (error.code === '23505') {
-        alert('That username is already taken. Please choose another.')
-      } else {
-        alert(error.message)
-      }
-    } else {
-      setUser(session.user)
-      await fetchProfile(session.user.id)
-      setStep('home')
-    }
-  }
-
-
-
-  useEffect(() => {
-    const checkUser = async () => {
-      const { data: { session } } = await supabase.auth.getSession()
-      if (session) {
-        setUser(session.user)
-        await fetchProfile(session.user.id)
-        setStep('home')
-      }
-    }
-    checkUser()
-  }, [])
-
-
-
-  const handleChangePassword = async (e: React.FormEvent) => {
-    e.preventDefault()
-
-    if (newPassword !== confirmPassword) {
-      alert('Passwords do not match!')
-      return
-    }
-
-    const { error } = await supabase.auth.updateUser({
-      password: newPassword,
-    })
-
-    if (error) {
-      alert(error.message)
-    } else {
-      alert('Password changed successfully!')
-      // Clear the fields and go back home
-      setNewPassword('')
-      setConfirmPassword('')
-      setStep('home')
-    }
-  }
-
-
-
-  useEffect (() => {
-    const checkUser = async () => {
-      const { data: { session } } = await supabase.auth.getSession()
-
-      if (session) {
-        setStep('home')
-        setUser(session.user)
-      }
-    }
-    checkUser()
-  }, [])
-
-
-
-  // Step 1: Send the email/password to Supabase
+  
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault()
     const { error } = await supabase.auth.signUp({
       email,
       password,
     })
-    if (error) { alert(error.message) 
+    if (error) {
       alert(error.message) 
-    } else { setStep('verify') 
+    } else {
       setStep('verify') 
     }
   }
 
-  //verify the code sent to the user's email
+
+
   const handleVerify = async (e: React.FormEvent) => {
     e.preventDefault()
     const { error } = await supabase.auth.verifyOtp({
@@ -149,7 +52,8 @@ export default function SignUpForm() {
     }
   }
 
-  // Step 2: Sign in the user with email/password
+
+
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault()
     const { error } = await supabase.auth.signInWithPassword ({
@@ -164,7 +68,8 @@ export default function SignUpForm() {
   }
 
 
-  const handleGoogleSignIn = async () => {
+
+  const handleGoogleSignUpOrSignIn = async () => {
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
@@ -175,7 +80,7 @@ export default function SignUpForm() {
   }
 
 
-  // Step 3: Sign out the user
+
   const handleLogout = async () => {
     const { error } = await supabase.auth.signOut()
 
@@ -201,6 +106,90 @@ export default function SignUpForm() {
       }
     }
   }
+
+
+
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    if (newPassword !== confirmPassword) {
+      alert('Passwords do not match!')
+      return
+    }
+
+    const { error } = await supabase.auth.updateUser({
+      password: newPassword,
+    })
+
+    if (error) {
+      alert(error.message)
+    } else {
+      alert('Password changed successfully!')
+      setStep('home')
+    }
+  }
+
+
+
+  const handleProfileSetup = async (e: React.FormEvent) => {
+    e.preventDefault()
+
+    const { data: { session } } = await supabase.auth.getSession()
+    if (!session) {
+      alert('Not logged in.')
+      return
+    }
+
+    const { error } = await supabase.from('profiles').insert({
+      id: session.user.id,
+      username,
+      age: parseInt(age),
+    })
+
+    if (error) {
+      if (error.code === '23505') {
+        alert('That username is already taken. Please choose another.')
+      } else {
+        alert(error.message)
+      }
+    } else {
+      setUser(session.user)
+      await fetchProfile(session.user.id)
+      setStep('home')
+    }
+  }
+
+
+
+  const fetchProfile = async (userId: string) => {
+    const { data, error } = await supabase
+      .from('profiles')
+      .select('username, age')
+      .eq('id', userId)
+      .single()
+
+    if (data) {
+      setProfile(data)
+      setStep('home')
+    } else {
+      setStep('profile')
+    }
+  }
+
+
+
+  useEffect(() => {
+    const checkUser = async () => {
+      const { data: { session } } = await supabase.auth.getSession()
+      if (session) {
+        setUser(session.user)
+        await fetchProfile(session.user.id)
+      }
+    }
+    checkUser()
+  }, [])
+
+
 
 
 
@@ -230,7 +219,7 @@ export default function SignUpForm() {
             required 
           />
           <button className="bg-blue-500 text-white p-2 rounded">Sign Up</button>
-          <button type="button" onClick={handleGoogleSignIn} className="bg-white border p-2 rounded w-full">Sign up with Google</button>
+          <button type="button" onClick={handleGoogleSignUpOrSignIn} className="bg-white border p-2 rounded w-full">Sign up with Google</button>
           <span>Already have an account? <span className="text-blue-500 underline cursor-pointer" onClick={() => setStep('signin')}>Sign In</span></span>
         </form>
 
@@ -257,7 +246,7 @@ export default function SignUpForm() {
             required
           />
           <button className='bg-blue-500 text-white p-2 rounded'>Sign In</button>
-          <button type="button" onClick={handleGoogleSignIn} className="bg-white border p-2 rounded w-full">Sign in with Google</button>
+          <button type="button" onClick={handleGoogleSignUpOrSignIn} className="bg-white border p-2 rounded w-full">Sign In with Google</button>
           <span>Don't have an account? <span className="text-blue-500 underline cursor-pointer" onClick={() => setStep('signup')}>Sign Up</span></span>
         </form>
 
