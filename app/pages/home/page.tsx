@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import Link from 'next/link'
-import { supabase } from '../../utils/supabase/client'
+import { supabase } from '../../../utils/supabase/client'
 
 type Profile = {
     username: string;
@@ -31,7 +31,7 @@ export default function HomePage () {
             .single()
     
           if (data) setProfile(data)
-          else router.push('/onboarding')
+          else router.push('/pages/auth')
         }
         fetchProfile()
     }, [])
@@ -40,7 +40,7 @@ export default function HomePage () {
 
     const handleLogout = async () => {
         await supabase.auth.signOut()
-        router.push('/auth/signin')
+        router.push('/pages/auth')
     }
 
 
@@ -49,7 +49,7 @@ export default function HomePage () {
         if (!confirm('Permanently delete account?')) return
         const { error } = await supabase.rpc('delete_self')
         if (error) alert(error.message)
-        else { await supabase.auth.signOut(); router.push('/auth/signup') }
+        else { await supabase.auth.signOut(); router.push('/pages/auth') }
     }
 
 

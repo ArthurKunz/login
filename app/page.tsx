@@ -12,8 +12,8 @@ export default function Rootpage() {
   useEffect(() => {
     const checkUser = async () => {
       const { data: { session } } = await supabase.auth.getSession()
-      if (session) router.push('/home')
-      else router.push('/auth/signin')
+      if (session) router.push('/pages/home')
+      else router.push('/pages/auth')
     }
     checkUser()
   }, [])
