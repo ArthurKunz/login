@@ -68,6 +68,9 @@ export default function HomePage () {
           </div>
         )}
         <button onClick={() => handleLogout()} className='cursor-pointer bg-blue-200 w-full text-white p-2 rounded'>Logout</button>
+        <button onClick={() => handleDeleteAccount()} className='cursor-pointer bg-blue-200 w-full text-white p-2 rounded'>delete account</button>
+        <button onClick={() => router.push('/settings/change-password')} className='cursor-pointer bg-blue-200 w-full text-white p-2 rounded'>change password</button>
+        <button onClick={() => router.push('/settings/change-data')} className='cursor-pointer bg-blue-200 w-full text-white p-2 rounded'>change data</button>
       </div>
     )
 }

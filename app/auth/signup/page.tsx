@@ -21,7 +21,7 @@ export default function SignUpPage () {
           password,
         })
         if (error) alert(error.message) 
-        else router.push(`/auth.verify?email=${email}`)
+        else router.push(`/auth/verify?email=${email}`)
     }
 
 
@@ -61,7 +61,7 @@ export default function SignUpPage () {
         />
         <button className="bg-blue-500 text-white p-2 rounded">Sign Up</button>
         <button type="button" onClick={handleGoogleSignup} className="bg-white border p-2 rounded w-full">Sign up with Google</button>
-        <link href='/auth/signin' className='text-blue-500 hover:underline'>Sign In</link>
+        <Link href='/auth/signin' className='text-blue-500 hover:underline'>Sign In</Link>
       </form>
     )
 }

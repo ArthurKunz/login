@@ -59,7 +59,9 @@ export default function SignInPage () {
         />
         <button className='bg-blue-500 text-white p-2 rounded'>Sign In</button>
         <button type="button" onClick={handleGoogleSignIn} className="bg-white border p-2 rounded w-full">Sign In with Google</button>
-        <Link href='/auth/signup' className='text-blue-500 hover:underline'>Sign Up</Link>
+        <span>Dont have an account? {' '}
+          <Link href='/auth/signup' className='text-blue-500 hover:underline'>Sign Up</Link>
+        </span>
       </form>
     )
 }
