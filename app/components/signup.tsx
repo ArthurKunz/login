@@ -2,6 +2,8 @@
 
 import { useState } from 'react'
 import { supabase } from '../../utils/supabase/client'
+import Image from 'next/image'
+import Google from '../assets/Google.png'
 
 interface SignUpProps {
     onSuccess: (email: string) => void
@@ -24,40 +26,60 @@ export default function SignUp({ onSuccess, onGoToSignIn }: SignUpProps) {
     }
 
     const handleGoogleSignUp = async () => {
-        const { error } = await supabase.auth.signInWithOAuth({
-            provider: 'google',
-            options: { redirectTo: window.location.origin },
-        })
-        if (error) {
-            console.error('Google signup error:', error)
-            alert(error.message)
-        } else {
-            onSuccess(email)
-        }
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: 'google',
+        options: { redirectTo: window.location.origin },
+      })
+      if (error) {
+        console.error('Google signup error:', error)
+        alert(error.message)
+      } 
     }
 
     return (
-        <form onSubmit={handleSignUp} className='flex flex-col gap-4'>
-            <h2 className='text-lg font-bold'>Sign Up</h2>
-            <input
-                type="email"
-                placeholder="Email"
-                value={email}
-                className="p-2 border"
-                onChange={(e) => setEmail(e.target.value)}
-                required
-            />
-            <input
-                type="password"
-                placeholder="Password"
-                value={password}
-                className="p-2 border"
-                onChange={(e) => setPassword(e.target.value)}
-                required
-            />
-            <button type="submit" className="bg-blue-500 text-white p-2 rounded">Sign Up</button>
-            <button type="button" onClick={handleGoogleSignUp} className="bg-white border p-2 rounded w-full">Sign up with Google</button>
-            <button type="button" onClick={onGoToSignIn} className='text-blue-500 hover:underline text-left'>Already have an account? Sign In</button>
+      <div className='flex flex-col items-center gap-10'>
+        <div className='w-full flex flex-col items-center gap-2.5'>
+          <span className='text-white text-3xl font-md'>Sign Up</span>
+          <span className='text-[#adadad] text-sm'>Enter your personal data to create an account</span>
+        </div>
+        <form onSubmit={handleSignUp} className='w-full flex flex-col items-center gap-7.5'>
+            <div className='w-full flex flex-col gap-2.5'>
+              <label className='text-[#adadad] text-sm'>Email</label>
+              <input
+                  type="email"
+                  placeholder="max.mustermann@gmail.com"
+                  value={email}
+                  className="w-full px-5 border bg-[#1f1f1f] border-[#444444] placeholder:text-[#6b6b6b] placeholder:text-sm h-12.5 rounded-xl"
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+              />
+            </div>
+            <div className='w-full flex flex-col gap-2.5'>
+              <label className='text-[#adadad] text-sm'>Password</label>
+              <input
+                  type="password"
+                  placeholder="Enter your password"
+                  value={password}
+                  className="w-full px-5 border bg-[#1f1f1f] border-[#444444] placeholder:text-[#6b6b6b] placeholder:text-sm h-12.5 rounded-xl"
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+              />
+              <span className='text-[#6b6b6b] text-sm'>Must be at least 8 characters</span>
+            </div>
+            <button type="submit" className="w-full bg-white text-black p-2 rounded-xl h-12.5 font-semibold">Sign Up</button>
         </form>
+        <div className='w-full flex justify-between items-center'>
+          <div className='w-4/10 h-0.25 bg-[#282828]'></div>
+          <span className='text-[#6b6b6b] text-sm'>Or</span>
+          <div className='w-4/10 h-0.25 bg-[#282828]'></div>
+        </div>
+        <button type="button" onClick={handleGoogleSignUp} className="border border-1.5 text-md border-[#1f1f1f] p-2 rounded-xl h-12.5 w-full">
+          <div className='flex justify-center items-center gap-2.5'>
+            <Image className='w-5 h-5' src={Google} alt="description"/>
+            <span className='font-semibold text-white text-md'>Google</span>
+          </div>
+          </button>
+        <button type="button" onClick={onGoToSignIn} className='text-blue-500 hover:underline text-left'><span>Already have an account? </span>Sign In</button>
+      </div>
     )
 }

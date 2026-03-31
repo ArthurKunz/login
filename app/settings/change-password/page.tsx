@@ -1,14 +1,15 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import Link from 'next/link'
 import { supabase } from '../../../utils/supabase/client'
 
-export default function ChangeDataPage() {
+interface ChangePasswordFormProps {
+  onSuccess: () => void
+}
+
+export default function ChangePasswordPage({ onSuccess }: ChangePasswordFormProps) {
     const [newPassword, setNewPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
-    const router = useRouter()
 
     const handleChangePassword = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -23,7 +24,7 @@ export default function ChangeDataPage() {
         if (error) {
           alert(error.message)
         } else {
-            router.push('/home')
+            onSuccess()
             alert('Password changed successfully!')
         }
       }
@@ -37,7 +38,7 @@ export default function ChangeDataPage() {
             <input type="password" placeholder="Confirm New Password" value={confirmPassword}
             className="p-2 border" onChange={(e) => setConfirmPassword(e.target.value)} required />
             <button className="bg-blue-500 text-white p-2 rounded">Save New Password</button>
-            <span className="text-blue-500 underline cursor-pointer" onClick={() => router.push('/home')}>Cancel</span>
+            <span className="text-blue-500 underline cursor-pointer" onClick={onSuccess}>Cancel</span>
         </form>
     )
 }

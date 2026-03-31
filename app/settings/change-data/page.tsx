@@ -48,7 +48,7 @@ export default function ChangeDataPage () {
           .eq('id', session.user.id)
     
         if (error) alert(error.message)
-        else router.push('/home')
+        else router.push('/pages/home')
     }
 
 
