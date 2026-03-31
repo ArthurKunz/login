@@ -27,9 +27,14 @@ export async function GET(request: Request) {
     )
 
     if (token_hash && type === 'recovery') {
-        await supabase.auth.verifyOtp({ token_hash, type: 'recovery' })
+        const { error } = await supabase.auth.verifyOtp({ token_hash, type: 'recovery' })
+
+        if (error) {
+            alert(error.message)
+        }
+
         return NextResponse.redirect(
-            `${requestUrl.origin}/pages/auth?step=reset-password`  // 👈 just step, no token
+            `${requestUrl.origin}/pages/auth?step=reset-password`
         )
     }
 
