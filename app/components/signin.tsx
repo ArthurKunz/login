@@ -46,7 +46,9 @@ export default function SignIn({ onSuccess, onGoToSignUp }: SignInProps) {
 
     const handleForgotPassword = async (e: React.FormEvent) => {
         e.preventDefault()
-        const { error } = await supabase.auth.resetPasswordForEmail(resetEmail)
+        const { error } = await supabase.auth.resetPasswordForEmail(resetEmail, {
+            redirectTo: `${window.location.origin}/auth/callback`, // IF SOMETHING DOES NOT WORK, DELETE THE THING IN THE CURLY BRACES
+        })
         if (error) {
             alert(error.message)
         } else {
