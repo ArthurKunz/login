@@ -29,9 +29,7 @@ export async function GET(request: Request) {
     if (token_hash && type === 'recovery') {
         const { error } = await supabase.auth.verifyOtp({ token_hash, type: 'recovery' })
 
-        if (error) {
-            alert(error.message)
-        }
+        if (error) alert(error.message)
 
         return NextResponse.redirect(
             `${requestUrl.origin}/pages/auth?step=reset-password`
@@ -39,7 +37,9 @@ export async function GET(request: Request) {
     }
 
     if (code) {
-        await supabase.auth.exchangeCodeForSession(code)
+        const { error } = await supabase.auth.exchangeCodeForSession(code)
+
+        if (error) alert(error.message)
     }
 
     return NextResponse.redirect(`${requestUrl.origin}/pages/auth`)
