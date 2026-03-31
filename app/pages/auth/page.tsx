@@ -29,18 +29,6 @@ export default function AuthPage() {
 
 
 
-    useEffect(() => {
-        const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
-            if (event === 'PASSWORD_RECOVERY') {
-                setStep('reset-password')
-            }
-        })
-
-        return () => subscription.unsubscribe()
-    }, [])
-
-
-
     return (
         <div className='w-screen h-screen flex justify-between bg-[#121212] py-2.5'>
             <div className='w-3/5 h-full bg-sky-500 rounded-3xl ml-2.5'>
