@@ -2,14 +2,16 @@
 
 import { useState } from 'react'
 import { supabase } from '../../../utils/supabase/client'
+import { useRouter } from 'next/navigation'
 
 interface ChangePasswordFormProps {
-  onSuccess: () => void
+  onSuccess?: () => void
 }
 
 export default function ChangePasswordPage({ onSuccess }: ChangePasswordFormProps) {
     const [newPassword, setNewPassword] = useState('')
     const [confirmPassword, setConfirmPassword] = useState('')
+    const router = useRouter()
 
     const handleChangePassword = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -24,8 +26,11 @@ export default function ChangePasswordPage({ onSuccess }: ChangePasswordFormProp
         if (error) {
           alert(error.message)
         } else {
+          if (onSuccess) {
             onSuccess()
-            alert('Password changed successfully!')
+          } else {
+            router.push('/pages/home')
+          }
         }
       }
 
@@ -38,7 +43,6 @@ export default function ChangePasswordPage({ onSuccess }: ChangePasswordFormProp
             <input type="password" placeholder="Confirm New Password" value={confirmPassword}
             className="p-2 border" onChange={(e) => setConfirmPassword(e.target.value)} required />
             <button className="bg-blue-500 text-white p-2 rounded">Save New Password</button>
-            <span className="text-blue-500 underline cursor-pointer" onClick={onSuccess}>Cancel</span>
         </form>
     )
 }
