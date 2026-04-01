@@ -18,6 +18,10 @@ export default function Onboarding({ onSuccess }: OnboardingProps) {
     const [gender, setGender] = useState('')
     const [height, setHeight] = useState('')
     const [relationship, setRelationship] = useState('')
+    const [instagram, setInstagram] = useState('')
+    const [tiktok, setTiktok] = useState('')
+    const [snapchat, setSnapchat] = useState('')
+    const [school, setSchool] = useState('')
 
     const handleSetUpProfile = async (e: React.FormEvent) => {
         e.preventDefault()
@@ -37,6 +41,10 @@ export default function Onboarding({ onSuccess }: OnboardingProps) {
             gender,
             height: parseInt(height),
             relationship,
+            instagram,
+            tiktok,
+            snapchat,
+            school
         })
         if (error) {
             console.error('Onboarding error:', error)
@@ -64,11 +72,18 @@ export default function Onboarding({ onSuccess }: OnboardingProps) {
                 <option value="prefer_not_to_say">Keine Angabe</option>
             </select>
             <input type="number" placeholder="Größe (cm)" value={height} className="p-2 border" min={50} max={250} onChange={(e) => setHeight(e.target.value)} required />
-            <select value={relationship} className="p-2 border bg-white" onChange={(e) => setRelationship(e.target.value)} required>
+            <select value={relationship} className="p-2 border bg-white" onChange={(e) => setRelationship(e.target.value)}>
                 <option value="" disabled>Beziehungsstatus</option>
-                <option value="single">Single</option>
-                <option value="relationship">In einer Beziehung</option>
-                <option value="prefer_not_to_say">Keine Angabe</option>
+                <option value="single">single</option>
+                <option value="vergeben">vergeben</option>
+            </select>
+            <input type="text" placeholder="Instagram" value={instagram} className="p-2 border" step="0.1" onChange={(e) => setInstagram(e.target.value)}/>
+            <input type="text" placeholder="Tiktok" value={tiktok} className="p-2 border" step="0.1" onChange={(e) => setTiktok(e.target.value)}/>
+            <input type="text" placeholder="Snapchat" value={snapchat} className="p-2 border" step="0.1" onChange={(e) => setSnapchat(e.target.value)}/>
+            <select value={school} className="p-2 border bg-white" onChange={(e) => setSchool(e.target.value)}>
+                <option value="" disabled>Schule</option>
+                <option value="MSGL">MSGL</option>
+                <option value="Rahn_Oberschule">Rahn Oberschule</option>
             </select>
 
             <button type="submit" className="bg-blue-500 text-white p-2 rounded">Save & Continue</button>

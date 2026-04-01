@@ -16,6 +16,10 @@ export default function ChangeDataPage () {
     const [gender, setGender] = useState('')
     const [height, setHeight] = useState('')
     const [relationship, setRelationship] = useState('')
+    const [instagram, setInstagram] = useState('')
+    const [tiktok, setTiktok] = useState('')
+    const [snapchat, setSnapchat] = useState('')
+    const [school, setSchool] = useState('')
     const router = useRouter()
 
     useEffect(() => {
@@ -24,7 +28,7 @@ export default function ChangeDataPage () {
             if (!session) { router.push('/auth/signin'); return }
     
             const { data } = await supabase.from('profiles')
-                .select('username, firstname, surname, age, gradelevel, averagemark, gender, height, relationship')
+                .select('username, firstname, surname, age, gradelevel, averagemark, gender, height, relationship, instagram, tiktok, snapchat, school')
                 .eq('id', session.user.id)
                 .single()
     
@@ -38,6 +42,10 @@ export default function ChangeDataPage () {
                 setGender(data.gender)
                 setHeight(String(data.height))
                 setRelationship(data.relationship)
+                setInstagram(data.instagram)
+                setTiktok(data.tiktok)
+                setSnapchat(data.snapchat)
+                setSchool(data.school)
             }
         }
         fetchProfile()
@@ -60,6 +68,10 @@ export default function ChangeDataPage () {
             gender,
             height: parseInt(height),
             relationship,
+            instagram,
+            tiktok,
+            snapchat,
+            school,
           })
           .eq('id', session.user.id)
     
@@ -89,9 +101,14 @@ export default function ChangeDataPage () {
             <option value="" disabled>Beziehungsstatus</option>
             <option value="single">Single</option>
             <option value="relationship">In einer Beziehung</option>
-            <option value="married">Verheiratet</option>
-            <option value="complicated">Kompliziert</option>
-            <option value="prefer_not_to_say">Keine Angabe</option>
+        </select>
+        <input type="text" placeholder="Instagram" value={instagram} className="p-2 border" step="0.1" onChange={(e) => setInstagram(e.target.value)}/>
+        <input type="text" placeholder="Tiktok" value={tiktok} className="p-2 border" step="0.1" onChange={(e) => setTiktok(e.target.value)}/>
+        <input type="text" placeholder="Snapchat" value={snapchat} className="p-2 border" step="0.1" onChange={(e) => setSnapchat(e.target.value)}/>
+        <select value={school} className="p-2 border bg-white" onChange={(e) => setSchool(e.target.value)}>
+            <option value="" disabled>Schule</option>
+            <option value="single">MSGL</option>
+            <option value="relationship">Rahn Oberschule</option>
         </select>
 
         <button className="bg-blue-500 text-white p-2 rounded">Save & Continue</button>

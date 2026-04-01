@@ -11,7 +11,25 @@ type Profile = {
     surname: string;
     age: number;
     gradelevel: number;
-    averagemark: number
+    averagemark: number;
+    gender: string | null;
+    height: number | null;
+    relationship: string | null;
+}
+
+const genderLabel: Record<string, string> = {
+    female: 'Weiblich',
+    male: 'Männlich',
+    diverse: 'Divers',
+    prefer_not_to_say: 'Keine Angabe',
+}
+
+const relationshipLabel: Record<string, string> = {
+    single: 'Single',
+    relationship: 'In einer Beziehung',
+    married: 'Verheiratet',
+    complicated: 'Kompliziert',
+    prefer_not_to_say: 'Keine Angabe',
 }
 
 export default function HomePage () {
@@ -26,7 +44,7 @@ export default function HomePage () {
           if (!session) { router.push('/auth/signin'); return }
     
           const { data } = await supabase.from('profiles')
-            .select('username, firstname, surname, age, gradelevel, averagemark')
+            .select('username, firstname, surname, age, gradelevel, averagemark, gender, height, relationship')
             .eq('id', session.user.id)
             .single()
     
@@ -65,6 +83,10 @@ export default function HomePage () {
             <p><strong>Age:</strong> {profile.age}</p>
             <p><strong>Gradelevel:</strong> {profile.gradelevel}</p>
             <p><strong>Averagemark:</strong> {profile.averagemark}</p>
+            <p><strong>Geschlecht:</strong> {profile.gender ? (genderLabel[profile.gender] ?? profile.gender) : '—'}</p>
+            <p><strong>Größe:</strong> {profile.height != null ? `${profile.height} cm` : '—'}</p>
+            <p><strong>Beziehung:</strong> {profile.relationship ? (relationshipLabel[profile.relationship] ?? profile.relationship) : '—'}</p>
+
           </div>
         )}
         <button onClick={() => handleLogout()} className='cursor-pointer bg-blue-200 w-full text-white p-2 rounded'>Logout</button>
