@@ -54,7 +54,7 @@ export default function ChangeDataPage () {
             username,
             firstname,
             surname,
-            age: parseInt(gradelevel),
+            age: parseInt(age),
             gradelevel: parseInt(gradelevel),
             averagemark: parseFloat(averagemark),
             gender,
