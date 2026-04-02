@@ -74,16 +74,17 @@ export default function Onboarding({ onSuccess }: OnboardingProps) {
             <input type="number" placeholder="Größe (cm)" value={height} className="p-2 border" min={50} max={250} onChange={(e) => setHeight(e.target.value)} required />
             <select value={relationship} className="p-2 border bg-white" onChange={(e) => setRelationship(e.target.value)}>
                 <option value="" disabled>Beziehungsstatus</option>
-                <option value="single">single</option>
-                <option value="vergeben">vergeben</option>
+                <option value="single">Single</option>
+                <option value="relationship">Vergeben</option>
+                <option value="prefer_not_to_say">Keine Angabe</option>
             </select>
             <input type="text" placeholder="Instagram" value={instagram} className="p-2 border" step="0.1" onChange={(e) => setInstagram(e.target.value)}/>
             <input type="text" placeholder="Tiktok" value={tiktok} className="p-2 border" step="0.1" onChange={(e) => setTiktok(e.target.value)}/>
             <input type="text" placeholder="Snapchat" value={snapchat} className="p-2 border" step="0.1" onChange={(e) => setSnapchat(e.target.value)}/>
             <select value={school} className="p-2 border bg-white" onChange={(e) => setSchool(e.target.value)}>
                 <option value="" disabled>Schule</option>
-                <option value="MSGL">MSGL</option>
-                <option value="Rahn_Oberschule">Rahn Oberschule</option>
+                <option value="msgl">MSGL</option>
+                <option value="rahn_oberschule">Rahn Oberschule</option>
             </select>
 
             <button type="submit" className="bg-blue-500 text-white p-2 rounded">Save & Continue</button>

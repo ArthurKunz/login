@@ -11,28 +11,31 @@ type Profile = {
     age: number;
     gradelevel: number;
     averagemark: number;
-    gender: string | null;
+    gender: string;
     height: number | null;
-    relationship: string | null;
+    relationship: string;
     instagram: string | null;
     tiktok: string | null;
     snapchat: string | null;
-    school: string | null;
+    school: string;
 }
 
 const genderLabel: Record<string, string> = {
-    female: 'Weiblich',
-    male: 'Männlich',
-    diverse: 'Divers',
-    prefer_not_to_say: 'Keine Angabe',
+  female: 'Weiblich',
+  male: 'Männlich',
+  diverse: 'Divers',
+  prefer_not_to_say: 'Keine Angabe',
 }
 
 const relationshipLabel: Record<string, string> = {
-    single: 'Single',
-    relationship: 'In einer Beziehung',
-    married: 'Verheiratet',
-    complicated: 'Kompliziert',
-    prefer_not_to_say: 'Keine Angabe',
+  single: 'Single',
+  relationship: 'Vergeben',
+  prefer_not_to_say: 'Keine Angabe',
+}
+
+const schoolLabel: Record<string, string> = {
+  msgl: 'MSGL',
+  rahn_oberschule: 'Rahn Oberschule',
 }
 
 export default function HomePage () {
@@ -86,13 +89,13 @@ export default function HomePage () {
             <p><strong>Age:</strong> {profile.age}</p>
             <p><strong>Gradelevel:</strong> {profile.gradelevel}</p>
             <p><strong>Averagemark:</strong> {profile.averagemark}</p>
-            <p><strong>Geschlecht:</strong> {profile.gender ? (genderLabel[profile.gender] ?? profile.gender) : '—'}</p>
-            <p><strong>Größe:</strong> {profile.height != null ? `${profile.height} cm` : '—'}</p>
-            <p><strong>Beziehung:</strong> {profile.relationship ? (relationshipLabel[profile.relationship] ?? profile.relationship) : '—'}</p>
+            <p><strong>Geschlecht:</strong> {genderLabel[profile.gender]}</p>
+            <p><strong>Größe:</strong> {profile.height + ' cm'}</p>
+            <p><strong>Beziehung:</strong> {relationshipLabel[profile.relationship]}</p>
             <p><strong>Instagram:</strong> {profile.instagram}</p>
             <p><strong>Tiktok:</strong> {profile.tiktok}</p>
             <p><strong>Snapchat:</strong> {profile.snapchat}</p>
-            <p><strong>Schule:</strong> {profile.school}</p>
+            <p><strong>Schule:</strong> {schoolLabel[profile.school]}</p>
           </div>
         )}
         <button onClick={() => handleLogout()} className='cursor-pointer bg-blue-200 w-full text-white p-2 rounded'>Logout</button>
