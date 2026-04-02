@@ -12,7 +12,7 @@ export default function Onboarding({ onSuccess }: OnboardingProps) {
     const [username, setUsername] = useState('')
     const [firstname, setFirstname] = useState('')
     const [surname, setSurname] = useState('')
-    const [age, setAge] = useState('')
+    const [birthday, setBirthday] = useState('')
     const [gradelevel, setGradelevel] = useState('')
     const [averagemark, setAveragemark] = useState('')
     const [gender, setGender] = useState('')
@@ -35,7 +35,7 @@ export default function Onboarding({ onSuccess }: OnboardingProps) {
             username,
             firstname,
             surname,
-            age: parseInt(age),
+            birthday,
             gradelevel: parseInt(gradelevel),
             averagemark: parseFloat(averagemark),
             gender,
@@ -61,7 +61,7 @@ export default function Onboarding({ onSuccess }: OnboardingProps) {
             <input type="text" placeholder="Username" value={username} className="p-2 border" onChange={(e) => setUsername(e.target.value)} required />
             <input type="text" placeholder="Vorname" value={firstname} className="p-2 border" onChange={(e) => setFirstname(e.target.value)} required />
             <input type="text" placeholder="Nachname" value={surname} className="p-2 border" onChange={(e) => setSurname(e.target.value)} required />
-            <input type="number" placeholder="Alter" value={age} className="p-2 border" min={1} max={120} onChange={(e) => setAge(e.target.value)} required />
+            <input type="date" placeholder="Alter" value={birthday} className="p-2 border" min={1} max={120} onChange={(e) => setBirthday(e.target.value)} required />
             <input type="number" placeholder="Klassenstufe" value={gradelevel} className="p-2 border" onChange={(e) => setGradelevel(e.target.value)} required />
             <input type="number" placeholder="Notendurchschnitt" value={averagemark} className="p-2 border" step="0.1" min={0.8} max={6} onChange={(e) => setAveragemark(e.target.value)} required />
             <select value={gender} className="p-2 border bg-white" onChange={(e) => setGender(e.target.value)} required>

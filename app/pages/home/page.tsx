@@ -8,7 +8,7 @@ type Profile = {
     username: string;
     firstname: string;
     surname: string;
-    age: number;
+    birthday: string; //check if it is a string or a number
     gradelevel: number;
     averagemark: number;
     gender: string;
@@ -50,7 +50,7 @@ export default function HomePage () {
           if (!session) { router.push('/auth/signin'); return }
     
           const { data } = await supabase.from('profiles')
-            .select('username, firstname, surname, age, gradelevel, averagemark, gender, height, relationship, instagram, tiktok, snapchat, school')
+            .select('username, firstname, surname, birthday, gradelevel, averagemark, gender, height, relationship, instagram, tiktok, snapchat, school')
             .eq('id', session.user.id)
             .single()
     
@@ -86,9 +86,9 @@ export default function HomePage () {
             <p><strong>Username:</strong> {profile.username}</p>
             <p><strong>Vorname</strong> {profile.firstname}</p>
             <p><strong>Nachname:</strong> {profile.surname}</p>
-            <p><strong>Age:</strong> {profile.age}</p>
-            <p><strong>Gradelevel:</strong> {profile.gradelevel}</p>
-            <p><strong>Averagemark:</strong> {profile.averagemark}</p>
+            <p><strong>Geburtstag:</strong> {profile.birthday}</p>
+            <p><strong>Klassenstufe:</strong> {profile.gradelevel}</p>
+            <p><strong>Notendurchschnitt:</strong> {profile.averagemark}</p>
             <p><strong>Geschlecht:</strong> {genderLabel[profile.gender]}</p>
             <p><strong>Größe:</strong> {profile.height + ' cm'}</p>
             <p><strong>Beziehung:</strong> {relationshipLabel[profile.relationship]}</p>
