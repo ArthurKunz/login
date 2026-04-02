@@ -2,7 +2,6 @@
 
 import { useState, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
-import Link from 'next/link'
 import { supabase } from '../../../utils/supabase/client'
 
 type Profile = {
@@ -15,6 +14,10 @@ type Profile = {
     gender: string | null;
     height: number | null;
     relationship: string | null;
+    instagram: string | null;
+    tiktok: string | null;
+    snapchat: string | null;
+    school: string | null;
 }
 
 const genderLabel: Record<string, string> = {
@@ -44,7 +47,7 @@ export default function HomePage () {
           if (!session) { router.push('/auth/signin'); return }
     
           const { data } = await supabase.from('profiles')
-            .select('username, firstname, surname, age, gradelevel, averagemark, gender, height, relationship')
+            .select('username, firstname, surname, age, gradelevel, averagemark, gender, height, relationship, instagram, tiktok, snapchat, school')
             .eq('id', session.user.id)
             .single()
     
@@ -86,7 +89,10 @@ export default function HomePage () {
             <p><strong>Geschlecht:</strong> {profile.gender ? (genderLabel[profile.gender] ?? profile.gender) : '—'}</p>
             <p><strong>Größe:</strong> {profile.height != null ? `${profile.height} cm` : '—'}</p>
             <p><strong>Beziehung:</strong> {profile.relationship ? (relationshipLabel[profile.relationship] ?? profile.relationship) : '—'}</p>
-
+            <p><strong>Instagram:</strong> {profile.instagram}</p>
+            <p><strong>Tiktok:</strong> {profile.tiktok}</p>
+            <p><strong>Snapchat:</strong> {profile.snapchat}</p>
+            <p><strong>Schule:</strong> {profile.school}</p>
           </div>
         )}
         <button onClick={() => handleLogout()} className='cursor-pointer bg-blue-200 w-full text-white p-2 rounded'>Logout</button>
