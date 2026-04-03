@@ -86,7 +86,7 @@ export default function HomePage () {
             <p><strong>Username:</strong> {profile.username}</p>
             <p><strong>Vorname</strong> {profile.firstname}</p>
             <p><strong>Nachname:</strong> {profile.surname}</p>
-            <p><strong>Geburtstag:</strong> {profile.birthday}</p>
+            <p><strong>Geburtstag:</strong> {new Date(profile.birthday).toLocaleDateString('de-DE')}</p>
             <p><strong>Klassenstufe:</strong> {profile.gradelevel}</p>
             <p><strong>Notendurchschnitt:</strong> {profile.averagemark}</p>
             <p><strong>Geschlecht:</strong> {genderLabel[profile.gender]}</p>
