@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation'
 import { supabase } from '../../../utils/supabase/client'
 
 type Profile = {
-    username: string;
     firstname: string;
     surname: string;
     birthday: string; //check if it is a string or a number
@@ -50,7 +49,7 @@ export default function HomePage () {
           if (!session) { router.push('/auth/signin'); return }
     
           const { data } = await supabase.from('profiles')
-            .select('username, firstname, surname, birthday, gradelevel, averagemark, gender, height, relationship, instagram, tiktok, snapchat, school')
+            .select('firstname, surname, birthday, gradelevel, averagemark, gender, height, relationship, instagram, tiktok, snapchat, school')
             .eq('id', session.user.id)
             .single()
     
@@ -83,7 +82,6 @@ export default function HomePage () {
         <h1 className='text-3xl text-blue-800 font-bold'>Homepage</h1>
         {profile && (
           <div className="bg-white text-black w-full p-3 rounded">
-            <p><strong>Username:</strong> {profile.username}</p>
             <p><strong>Vorname</strong> {profile.firstname}</p>
             <p><strong>Nachname:</strong> {profile.surname}</p>
             <p><strong>Geburtstag:</strong> {new Date(profile.birthday).toLocaleDateString('de-DE')}</p>

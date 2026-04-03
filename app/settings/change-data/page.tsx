@@ -7,7 +7,6 @@ import { supabase } from '../../../utils/supabase/client'
 
 
 export default function ChangeDataPage () {
-    const [username, setUsername] = useState('')
     const [firstname, setFirstname] = useState('')
     const [surname, setSurname] = useState('')
     const [birthday, setBirthday] = useState('')
@@ -28,12 +27,11 @@ export default function ChangeDataPage () {
             if (!session) { router.push('/auth/signin'); return }
     
             const { data } = await supabase.from('profiles')
-                .select('username, firstname, surname, birthday, gradelevel, averagemark, gender, height, relationship, instagram, tiktok, snapchat, school')
+                .select('firstname, surname, birthday, gradelevel, averagemark, gender, height, relationship, instagram, tiktok, snapchat, school')
                 .eq('id', session.user.id)
                 .single()
     
             if (data) {
-                setUsername(data.username)
                 setFirstname(data.firstname)
                 setSurname(data.surname)
                 setBirthday(String(data.birthday))
@@ -59,7 +57,6 @@ export default function ChangeDataPage () {
     
         const { error } = await supabase.from('profiles')
           .update({
-            username,
             firstname,
             surname,
             birthday, //check if you have to use parseInt
@@ -83,7 +80,6 @@ export default function ChangeDataPage () {
     return (
     <form onSubmit={handleChangeData} className='flex flex-col gap-4'>
         <h2 className='text-lg font-bold'>Set up your profile</h2>
-        <input type="text" placeholder="Username" value={username} className="p-2 border" onChange={(e) => setUsername(e.target.value)} required />
         <input type="text" placeholder="Vorname" value={firstname} className="p-2 border" min={1} max={120} onChange={(e) => setFirstname(e.target.value)} required />
         <input type="text" placeholder="Nachname" value={surname} className="p-2 border" onChange={(e) => setSurname(e.target.value)} required />
         <input type="date" placeholder="Alter" value={birthday} className="p-2 border" min={1} max={120} onChange={(e) => setBirthday(e.target.value)} required />
