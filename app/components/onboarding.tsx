@@ -51,6 +51,8 @@ export default function Onboarding({ onSuccess }: OnboardingProps) {
     const [customHobbyInput, setCustomHobbyInput] = useState('')
     const birthday = `${year}-${month}-${day}`
 
+    const [step, setStep] = useState<'personal' | 'socials' | 'hobbies'>('personal')
+
     const togglePopularHobby = (label: string) => {
         setHobbies((prev) => {
             if (prev.includes(label)) return prev.filter((h) => h !== label)
@@ -117,129 +119,148 @@ export default function Onboarding({ onSuccess }: OnboardingProps) {
 
     return (
         <form onSubmit={handleSetUpProfile} className='flex flex-col gap-4'>
-            <h2 className='text-lg font-bold'>Set up your profile</h2>
-            <input type="text" placeholder="Vorname" value={firstname} className="p-2 border" onChange={(e) => setFirstname(e.target.value)} required />
-            <input type="text" placeholder="Nachname" value={surname} className="p-2 border" onChange={(e) => setSurname(e.target.value)} required />
+            {step === 'personal' && (
+                <div className='flex flex-col gap-4'>
+                    <h2 className='text-lg font-bold'>Set up your profile</h2>
+                    <input type="text" placeholder="Vorname" value={firstname} className="p-2 border" onChange={(e) => setFirstname(e.target.value)} required />
+                    <input type="text" placeholder="Nachname" value={surname} className="p-2 border" onChange={(e) => setSurname(e.target.value)} required />
 
-            <select value={day} className='p-2 border bg-white' onChange={(e) => setDay(e.target.value)}>
-                <option value='' disabled>Tag</option>
-                {Array.from({ length: 31 }, (_, i) => i + 1).map (d => (
-                    <option key={d} value={String(d).padStart(2, '0')}>{d}</option>
-                ))}
-            </select>
+                    <select value={day} className='p-2 border bg-white' onChange={(e) => setDay(e.target.value)}>
+                        <option value='' disabled>Tag</option>
+                        {Array.from({ length: 31 }, (_, i) => i + 1).map (d => (
+                            <option key={d} value={String(d).padStart(2, '0')}>{d}</option>
+                        ))}
+                    </select>
 
-            <select value={month} className='p-2 border bg-white' onChange={(e) => setMonth(e.target.value)}>
-                <option value='' disabled>Monat</option>
-                {['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'].map((m, i) => (
-                    <option key={i} value={String(i + 1).padStart(2, '0')}>{m}</option>
-                ))}
-            </select>
+                    <select value={month} className='p-2 border bg-white' onChange={(e) => setMonth(e.target.value)}>
+                        <option value='' disabled>Monat</option>
+                        {['Januar','Februar','März','April','Mai','Juni','Juli','August','September','Oktober','November','Dezember'].map((m, i) => (
+                            <option key={i} value={String(i + 1).padStart(2, '0')}>{m}</option>
+                        ))}
+                    </select>
 
-            <select value={year} className='p-2 border bg-white' onChange={(e) => setYear(e.target.value)}>
-                <option value='' disabled></option>
-                {Array.from({ length: 100 }, (_, i) => new Date().getFullYear() - i).map(y => (
-                    <option key={y} value={String(y)}>{y}</option>
-                ))}
-            </select>
+                    <select value={year} className='p-2 border bg-white' onChange={(e) => setYear(e.target.value)}>
+                        <option value='' disabled></option>
+                        {Array.from({ length: 100 }, (_, i) => new Date().getFullYear() - i).map(y => (
+                            <option key={y} value={String(y)}>{y}</option>
+                        ))}
+                    </select>
 
-            <input type="number" placeholder="Klassenstufe" value={gradelevel} className="p-2 border" onChange={(e) => setGradelevel(e.target.value)} required />
-            <input type="number" placeholder="Notendurchschnitt" value={averagemark} className="p-2 border" step="0.1" min={0.8} max={6} onChange={(e) => setAveragemark(e.target.value)} required />
-            <select value={gender} className="p-2 border bg-white" onChange={(e) => setGender(e.target.value)} required>
-                <option value="" disabled>Geschlecht wählen</option>
-                <option value="female">Weiblich</option>
-                <option value="male">Männlich</option>
-                <option value="diverse">Divers</option>
-                <option value="prefer_not_to_say">Keine Angabe</option>
-            </select>
-            <input type="number" placeholder="Größe (cm)" value={height} className="p-2 border" min={50} max={250} onChange={(e) => setHeight(e.target.value)} required />
-            <select value={relationship} className="p-2 border bg-white" onChange={(e) => setRelationship(e.target.value)}>
-                <option value="" disabled>Beziehungsstatus</option>
-                <option value="single">Single</option>
-                <option value="relationship">Vergeben</option>
-                <option value="prefer_not_to_say">Keine Angabe</option>
-            </select>
-            <input type="text" placeholder="Instagram" value={instagram} className="p-2 border" step="0.1" onChange={(e) => setInstagram(e.target.value)}/>
-            <input type="text" placeholder="Tiktok" value={tiktok} className="p-2 border" step="0.1" onChange={(e) => setTiktok(e.target.value)}/>
-            <input type="text" placeholder="Snapchat" value={snapchat} className="p-2 border" step="0.1" onChange={(e) => setSnapchat(e.target.value)}/>
-            <select value={school} className="p-2 border bg-white" onChange={(e) => setSchool(e.target.value)}>
-                <option value="" disabled>Schule</option>
-                <option value="msgl">MSGL</option>
-                <option value="rahn_oberschule">Rahn Oberschule</option>
-            </select>
-
-            <div className="flex flex-col gap-3 pt-2 border-t mt-2">
-                <div>
-                    <h3 className="text-md font-semibold">Wofür interessierst du dich am meisten?</h3>
-                    <p className="text-sm text-gray-500">Wähle bis zu {MAX_HOBBIES} Kategorien</p>
+                    <input type="number" placeholder="Klassenstufe" value={gradelevel} className="p-2 border" onChange={(e) => setGradelevel(e.target.value)} required />
+                    <input type="number" placeholder="Notendurchschnitt" value={averagemark} className="p-2 border" step="0.1" min={0.8} max={6} onChange={(e) => setAveragemark(e.target.value)} required />
+                    <select value={gender} className="p-2 border bg-white" onChange={(e) => setGender(e.target.value)} required>
+                        <option value="" disabled>Geschlecht wählen</option>
+                        <option value="female">Weiblich</option>
+                        <option value="male">Männlich</option>
+                        <option value="diverse">Divers</option>
+                        <option value="prefer_not_to_say">Keine Angabe</option>
+                    </select>
+                    <input type="number" placeholder="Größe (cm)" value={height} className="p-2 border" min={50} max={250} onChange={(e) => setHeight(e.target.value)} required />
+                    <select value={relationship} className="p-2 border bg-white" onChange={(e) => setRelationship(e.target.value)}>
+                        <option value="" disabled>Beziehungsstatus</option>
+                        <option value="single">Single</option>
+                        <option value="relationship">Vergeben</option>
+                        <option value="prefer_not_to_say">Keine Angabe</option>
+                    </select>
+                    <select value={school} className="p-2 border bg-white" onChange={(e) => setSchool(e.target.value)}>
+                        <option value="" disabled>Schule</option>
+                        <option value="msgl">MSGL</option>
+                        <option value="rahn_oberschule">Rahn Oberschule</option>
+                    </select>
+                    <button className="bg-blue-500 text-white p-2 rounded" onClick={() => setStep('hobbies')}>Save & Continue</button>
                 </div>
-                <div className="flex flex-wrap gap-2">
-                    {POPULAR_HOBBIES.map(({ label }) => {
-                        const selected = hobbies.includes(label)
-                        return (
-                            <button
-                                key={label}
-                                type="button"
-                                onClick={() => (selected ? removeHobby(label) : togglePopularHobby(label))}
-                                className={
-                                    selected
-                                        ? 'inline-flex items-center gap-1.5 rounded-full border border-blue-700 bg-blue-700 px-3 py-1.5 text-sm text-white'
-                                        : 'inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-white px-3 py-1.5 text-sm text-gray-800 shadow-sm'
-                                }
-                            >
-                                <span>{label}</span>
-                                {selected && (
-                                    <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-white/20 text-xs" aria-hidden>
-                                        ×
-                                    </span>
-                                )}
-                            </button>
-                        )
-                    })}
-                </div>
-                <div className="flex flex-col gap-2 sm:flex-row sm:items-end">
-                    <input
-                        type="text"
-                        placeholder="Eigene Interessen hinzufügen …"
-                        value={customHobbyInput}
-                        className="p-2 border flex-1"
-                        maxLength={80}
-                        onChange={(e) => setCustomHobbyInput(e.target.value)}
-                        onKeyDown={handleCustomHobbyKeyDown}
-                        disabled={hobbies.length >= MAX_HOBBIES}
-                    />
-                    <button
-                        type="button"
-                        onClick={addCustomHobby}
-                        disabled={hobbies.length >= MAX_HOBBIES || !customHobbyInput.trim()}
-                        className="rounded bg-gray-100 px-3 py-2 text-sm font-medium text-gray-800 disabled:opacity-50"
-                    >
-                        Hinzufügen
-                    </button>
-                </div>
-                {hobbies.some((h) => !POPULAR_HOBBIES.some((p) => p.label === h)) && (
+            )}
+
+
+
+            {step === 'hobbies' && (
+                <div className="flex flex-col gap-3 pt-2 border-t mt-2">
+                    <div>
+                        <h3 className="text-md font-semibold">Wofür interessierst du dich am meisten?</h3>
+                        <p className="text-sm text-gray-500">Wähle bis zu {MAX_HOBBIES} Kategorien</p>
+                    </div>
                     <div className="flex flex-wrap gap-2">
-                        <span className="text-xs text-gray-500 w-full">Deine eigenen:</span>
-                        {hobbies
-                            .filter((h) => !POPULAR_HOBBIES.some((p) => p.label === h))
-                            .map((label) => (
+                        {POPULAR_HOBBIES.map(({ label }) => {
+                            const selected = hobbies.includes(label)
+                            return (
                                 <button
                                     key={label}
                                     type="button"
-                                    onClick={() => removeHobby(label)}
-                                    className="inline-flex items-center gap-1.5 rounded-full border border-blue-700 bg-blue-700 px-3 py-1.5 text-sm text-white"
+                                    onClick={() => (selected ? removeHobby(label) : togglePopularHobby(label))}
+                                    className={
+                                        selected
+                                            ? 'inline-flex items-center gap-1.5 rounded-full border border-blue-700 bg-blue-700 px-3 py-1.5 text-sm text-white'
+                                            : 'inline-flex items-center gap-1.5 rounded-full border border-gray-200 bg-white px-3 py-1.5 text-sm text-gray-800 shadow-sm'
+                                    }
                                 >
                                     <span>{label}</span>
-                                    <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-white/20 text-xs" aria-hidden>
-                                        ×
-                                    </span>
+                                    {selected && (
+                                        <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-white/20 text-xs" aria-hidden>
+                                            ×
+                                        </span>
+                                    )}
                                 </button>
-                            ))}
+                            )
+                        })}
                     </div>
-                )}
-                <p className="text-xs text-gray-500">{hobbies.length} / {MAX_HOBBIES} ausgewählt</p>
-            </div>
+                    <div className="flex flex-col gap-2 sm:flex-row sm:items-end">
+                        <input
+                            type="text"
+                            placeholder="Eigene Interessen hinzufügen …"
+                            value={customHobbyInput}
+                            className="p-2 border flex-1"
+                            maxLength={80}
+                            onChange={(e) => setCustomHobbyInput(e.target.value)}
+                            onKeyDown={handleCustomHobbyKeyDown}
+                            disabled={hobbies.length >= MAX_HOBBIES}
+                        />
+                        <button
+                            type="button"
+                            onClick={addCustomHobby}
+                            disabled={hobbies.length >= MAX_HOBBIES || !customHobbyInput.trim()}
+                            className="rounded bg-gray-100 px-3 py-2 text-sm font-medium text-gray-800 disabled:opacity-50"
+                        >
+                            Hinzufügen
+                        </button>
+                    </div>
+                    {hobbies.some((h) => !POPULAR_HOBBIES.some((p) => p.label === h)) && (
+                        <div className="flex flex-wrap gap-2">
+                            <span className="text-xs text-gray-500 w-full">Deine eigenen:</span>
+                            {hobbies
+                                .filter((h) => !POPULAR_HOBBIES.some((p) => p.label === h))
+                                .map((label) => (
+                                    <button
+                                        key={label}
+                                        type="button"
+                                        onClick={() => removeHobby(label)}
+                                        className="inline-flex items-center gap-1.5 rounded-full border border-blue-700 bg-blue-700 px-3 py-1.5 text-sm text-white"
+                                    >
+                                        <span>{label}</span>
+                                        <span className="inline-flex h-5 w-5 items-center justify-center rounded-full bg-white/20 text-xs" aria-hidden>
+                                            ×
+                                        </span>
+                                    </button>
+                                ))}
+                        </div>
+                    )}
+                    <p className="text-xs text-gray-500">{hobbies.length} / {MAX_HOBBIES} ausgewählt</p>
+                    <button className="bg-blue-500 text-white p-2 rounded" onClick={() => setStep('socials')}>Save & Continue</button>
+                    <button className="bg-blue-500 text-white p-2 rounded" onClick={() => setStep('personal')}>back</button>
+                </div>
+            )}
 
-            <button type="submit" className="bg-blue-500 text-white p-2 rounded">Save & Continue</button>
+
+
+
+            {step === 'socials' && (
+                <div className='flex flex-col gap-4'>
+                    <input type="text" placeholder="Instagram" value={instagram} className="p-2 border" step="0.1" onChange={(e) => setInstagram(e.target.value)}/>
+                    <input type="text" placeholder="Tiktok" value={tiktok} className="p-2 border" step="0.1" onChange={(e) => setTiktok(e.target.value)}/>
+                    <input type="text" placeholder="Snapchat" value={snapchat} className="p-2 border" step="0.1" onChange={(e) => setSnapchat(e.target.value)}/>
+                    <button type="submit" className="bg-blue-500 text-white p-2 rounded">Save & Continue</button>
+                    <button className="bg-blue-500 text-white p-2 rounded" onClick={() => setStep('hobbies')}>back</button>
+                </div>
+            )}
         </form>
     )
 }
