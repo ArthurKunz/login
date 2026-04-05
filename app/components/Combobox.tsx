@@ -45,7 +45,7 @@ export default function Combobox({ topic, value, onChange }: Props) {
                 onFocus={() => setOpen(true)}
             />
             {open && filtered.length > 0 && (
-                <ul className="absolute z-10 w-full bg-white border mt-1 rounded shadow max-h-48 overflow-y-auto">
+                <ul className="absolute z-50 w-full bg-white border mt-1 rounded shadow max-h-45 overflow-y-auto">
                     {filtered.map(school => (
                         <li
                             key={school}

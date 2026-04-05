@@ -34,12 +34,15 @@ const POPULAR_HOBBIES = [
 ] as const
 
 const SCHOOLS = [
-    'MSGL',
     'Rahn Oberschule',
     'Gymnasium Thomasschule',
     'Leibniz-Gymnasium',
     'Wilhelm-Ostwald-Schule',
-    // add more...
+    'MSGL',
+    'MSLZ',
+    'MSLA',
+    'MSLP',
+    'MSLU',
 ]
 
 export default function Onboarding({ onSuccess }: OnboardingProps) {
@@ -61,7 +64,7 @@ export default function Onboarding({ onSuccess }: OnboardingProps) {
     const [customHobbyInput, setCustomHobbyInput] = useState('')
     const birthday = `${year}-${month}-${day}`
 
-    const [step, setStep] = useState<'personal' | 'socials' | 'hobbies' | 'school'>('personal')
+    const [step, setStep] = useState<'personal' | 'socials' | 'hobbies' | 'school'>('school')
 
     const togglePopularHobby = (label: string) => {
         setHobbies((prev) => {
@@ -268,7 +271,7 @@ export default function Onboarding({ onSuccess }: OnboardingProps) {
 
 
             {step === 'school' && (
-                <div className='flex flex-col gap-4'>
+                <div className='flex flex-col gap-4 overflow-visible'>
                     <input type="number" placeholder="Klassenstufe" value={gradelevel} className="p-2 border" onChange={(e) => setGradelevel(e.target.value)} required />
                     <input type="number" placeholder="Notendurchschnitt" value={averagemark} className="p-2 border" step="0.1" min={0.8} max={6} onChange={(e) => setAveragemark(e.target.value)} required />
                     <Combobox value={school} onChange={setSchool} topic={SCHOOLS}/>
