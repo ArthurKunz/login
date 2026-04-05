@@ -12,7 +12,7 @@ import { supabase } from '../../../utils/supabase/client'
 export default function AuthPage() {
     const router = useRouter()
     const searchParams = useSearchParams()
-    const [step, setStep] = useState<'signup' | 'signin' | 'verify' | 'onboarding' | 'reset-password'>('verify')
+    const [step, setStep] = useState<'signup' | 'signin' | 'verify' | 'onboarding' | 'reset-password'>('signup')
     const [signupEmail, setSignupEmail] = useState('')
 
 
