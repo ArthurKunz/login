@@ -2,6 +2,7 @@
 
 import { useState } from 'react'
 import { supabase } from '../../utils/supabase/client'
+import Combobox from '../components/Combobox'
 
 interface OnboardingProps {
     onSuccess: () => void
@@ -32,6 +33,15 @@ const POPULAR_HOBBIES = [
     { label: '🌱 Nachhaltigkeit' },
 ] as const
 
+const SCHOOLS = [
+    'MSGL',
+    'Rahn Oberschule',
+    'Gymnasium Thomasschule',
+    'Leibniz-Gymnasium',
+    'Wilhelm-Ostwald-Schule',
+    // add more...
+]
+
 export default function Onboarding({ onSuccess }: OnboardingProps) {
     const [firstname, setFirstname] = useState('')
     const [surname, setSurname] = useState('')
@@ -51,7 +61,7 @@ export default function Onboarding({ onSuccess }: OnboardingProps) {
     const [customHobbyInput, setCustomHobbyInput] = useState('')
     const birthday = `${year}-${month}-${day}`
 
-    const [step, setStep] = useState<'personal' | 'socials' | 'hobbies'>('personal')
+    const [step, setStep] = useState<'personal' | 'socials' | 'hobbies' | 'school'>('personal')
 
     const togglePopularHobby = (label: string) => {
         setHobbies((prev) => {
@@ -118,7 +128,7 @@ export default function Onboarding({ onSuccess }: OnboardingProps) {
     }
 
     return (
-        <form onSubmit={handleSetUpProfile} className='flex flex-col gap-4'>
+        <form onSubmit={handleSetUpProfile} className='w-full flex flex-col gap-4'>
             {step === 'personal' && (
                 <div className='flex flex-col gap-4'>
                     <h2 className='text-lg font-bold'>Set up your profile</h2>
@@ -140,14 +150,12 @@ export default function Onboarding({ onSuccess }: OnboardingProps) {
                     </select>
 
                     <select value={year} className='p-2 border bg-white' onChange={(e) => setYear(e.target.value)}>
-                        <option value='' disabled></option>
+                        <option value='' disabled>Jahr</option>
                         {Array.from({ length: 100 }, (_, i) => new Date().getFullYear() - i).map(y => (
                             <option key={y} value={String(y)}>{y}</option>
                         ))}
                     </select>
 
-                    <input type="number" placeholder="Klassenstufe" value={gradelevel} className="p-2 border" onChange={(e) => setGradelevel(e.target.value)} required />
-                    <input type="number" placeholder="Notendurchschnitt" value={averagemark} className="p-2 border" step="0.1" min={0.8} max={6} onChange={(e) => setAveragemark(e.target.value)} required />
                     <select value={gender} className="p-2 border bg-white" onChange={(e) => setGender(e.target.value)} required>
                         <option value="" disabled>Geschlecht wählen</option>
                         <option value="female">Weiblich</option>
@@ -161,11 +169,6 @@ export default function Onboarding({ onSuccess }: OnboardingProps) {
                         <option value="single">Single</option>
                         <option value="relationship">Vergeben</option>
                         <option value="prefer_not_to_say">Keine Angabe</option>
-                    </select>
-                    <select value={school} className="p-2 border bg-white" onChange={(e) => setSchool(e.target.value)}>
-                        <option value="" disabled>Schule</option>
-                        <option value="msgl">MSGL</option>
-                        <option value="rahn_oberschule">Rahn Oberschule</option>
                     </select>
                     <button className="bg-blue-500 text-white p-2 rounded" onClick={() => setStep('hobbies')}>Save & Continue</button>
                 </div>
@@ -257,8 +260,20 @@ export default function Onboarding({ onSuccess }: OnboardingProps) {
                     <input type="text" placeholder="Instagram" value={instagram} className="p-2 border" step="0.1" onChange={(e) => setInstagram(e.target.value)}/>
                     <input type="text" placeholder="Tiktok" value={tiktok} className="p-2 border" step="0.1" onChange={(e) => setTiktok(e.target.value)}/>
                     <input type="text" placeholder="Snapchat" value={snapchat} className="p-2 border" step="0.1" onChange={(e) => setSnapchat(e.target.value)}/>
-                    <button type="submit" className="bg-blue-500 text-white p-2 rounded">Save & Continue</button>
+                    <button className="bg-blue-500 text-white p-2 rounded" onClick={() => setStep('school')}>Save & Continue</button>
                     <button className="bg-blue-500 text-white p-2 rounded" onClick={() => setStep('hobbies')}>back</button>
+                </div>
+            )}
+
+
+
+            {step === 'school' && (
+                <div className='flex flex-col gap-4'>
+                    <input type="number" placeholder="Klassenstufe" value={gradelevel} className="p-2 border" onChange={(e) => setGradelevel(e.target.value)} required />
+                    <input type="number" placeholder="Notendurchschnitt" value={averagemark} className="p-2 border" step="0.1" min={0.8} max={6} onChange={(e) => setAveragemark(e.target.value)} required />
+                    <Combobox value={school} onChange={setSchool} topic={SCHOOLS}/>
+                    <button type="submit" className="bg-blue-500 text-white p-2 rounded">Save & Continue</button>
+                    <button className="bg-blue-500 text-white p-2 rounded" onClick={() => setStep('socials')}>back</button>
                 </div>
             )}
         </form>
