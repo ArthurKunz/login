@@ -12,7 +12,7 @@ import { supabase } from '../../../utils/supabase/client'
 export default function AuthPage() {
     const router = useRouter()
     const searchParams = useSearchParams()
-    const [step, setStep] = useState<'signup' | 'signin' | 'verify' | 'onboarding' | 'reset-password'>('signup')
+    const [step, setStep] = useState<'signup' | 'signin' | 'verify' | 'onboarding' | 'reset-password'>('verify')
     const [signupEmail, setSignupEmail] = useState('')
 
 
@@ -23,14 +23,14 @@ export default function AuthPage() {
             setStep('onboarding')
         }
         if (stepParam === 'reset-password') {
-            setStep('reset-password')  // add this to your union type
+            setStep('reset-password')
         }
     }, [searchParams])
 
 
 
     return (
-        <div className='w-screen h-screen flex justify-between bg-[#121212] py-2.5'>
+        <div className='w-screen h-screen flex justify-between bg-[#fff] py-2.5'>
             <div className='w-3/5 h-full bg-sky-500 rounded-3xl ml-2.5'>
 
             </div>
