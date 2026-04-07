@@ -15,7 +15,6 @@ export default function ChangeDataPage () {
     const [gradelevel, setGradelevel] = useState('')
     const [averagemark, setAveragemark] = useState('')
     const [gender, setGender] = useState('')
-    const [height, setHeight] = useState('')
     const [relationship, setRelationship] = useState('')
     const [instagram, setInstagram] = useState('')
     const [tiktok, setTiktok] = useState('')
@@ -30,7 +29,7 @@ export default function ChangeDataPage () {
             if (!session) { router.push('/auth/signin'); return }
     
             const { data } = await supabase.from('profiles')
-                .select('firstname, surname, birthday, gradelevel, averagemark, gender, height, relationship, instagram, tiktok, snapchat, school')
+                .select('firstname, surname, birthday, gradelevel, averagemark, gender, relationship, instagram, tiktok, snapchat, school')
                 .eq('id', session.user.id)
                 .single()
 
@@ -41,7 +40,6 @@ export default function ChangeDataPage () {
                 setGradelevel(String(data.gradelevel))
                 setAveragemark(String(data.averagemark))
                 setGender(data.gender)
-                setHeight(String(data.height))
                 setRelationship(data.relationship)
                 setInstagram(data.instagram)
                 setTiktok(data.tiktok)
@@ -71,7 +69,6 @@ export default function ChangeDataPage () {
             gradelevel: parseInt(gradelevel),
             averagemark: parseFloat(averagemark),
             gender,
-            height: parseInt(height),
             relationship,
             instagram,
             tiktok,
@@ -121,7 +118,6 @@ export default function ChangeDataPage () {
             <option value="diverse">Divers</option>
             <option value="prefer_not_to_say">Keine Angabe</option>
         </select>
-        <input type="number" placeholder="Größe (cm)" value={height} className="p-2 border" min={50} max={250} onChange={(e) => setHeight(e.target.value)} required />
         <select value={relationship} className="p-2 border bg-white" onChange={(e) => setRelationship(e.target.value)} required>
             <option value="" disabled>Beziehungsstatus</option>
             <option value="single">Single</option>

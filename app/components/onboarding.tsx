@@ -134,7 +134,6 @@ export default function Onboarding({ onSuccess }: OnboardingProps) {
     const [gradelevel, setGradelevel] = useState('')
     const [averagemark, setAveragemark] = useState('')
     const [gender, setGender] = useState('')
-    const [height, setHeight] = useState('')
     const [relationship, setRelationship] = useState('')
     const [instagram, setInstagram] = useState('')
     const [tiktok, setTiktok] = useState('')
@@ -208,7 +207,6 @@ export default function Onboarding({ onSuccess }: OnboardingProps) {
             gradelevel: parseInt(gradelevel),
             averagemark: parseFloat(averagemark),
             gender,
-            height: parseInt(height),
             relationship,
             instagram,
             tiktok,
@@ -261,7 +259,6 @@ export default function Onboarding({ onSuccess }: OnboardingProps) {
                         <option value="diverse">Divers</option>
                         <option value="prefer_not_to_say">Keine Angabe</option>
                     </select>
-                    <input type="number" placeholder="Größe (cm)" value={height} className="p-2 border" min={50} max={250} onChange={(e) => setHeight(e.target.value)} required />
                     <select value={relationship} className="p-2 border bg-white" onChange={(e) => setRelationship(e.target.value)}>
                         <option value="" disabled>Beziehungsstatus</option>
                         <option value="single">Single</option>
