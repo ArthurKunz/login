@@ -24,7 +24,7 @@ export default function Combobox({ topic, value, onChange }: Props) {
 
     const filtered = topic.filter(s =>
         s.name.toLowerCase().includes(query.toLowerCase())
-    )
+    ).sort((a, b) => a.name.toLowerCase().localeCompare(b.name.toLowerCase()))
 
     useEffect(() => {
         const handler = (e: MouseEvent) => {
