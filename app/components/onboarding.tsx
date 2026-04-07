@@ -144,7 +144,22 @@ export default function Onboarding({ onSuccess }: OnboardingProps) {
     const [customHobbyInput, setCustomHobbyInput] = useState('')
     const birthday = `${year}-${month}-${day}`
 
-    const [step, setStep] = useState<'personal' | 'socials' | 'hobbies' | 'school'>('school')
+    const [step, setStep] = useState<'personal' | 'socials' | 'hobbies' | 'school'>('personal')
+
+    const currentAge = (() => {
+        if (!day || !month || !year) return null;
+    
+        const birthDate = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+        const today = new Date();
+    
+        let calculatedAge = today.getFullYear() - birthDate.getFullYear();
+        const hasHadBirthdayThisYear =
+            today.getMonth() > birthDate.getMonth() ||
+            (today.getMonth() === birthDate.getMonth() && today.getDate() >= birthDate.getDate());
+    
+        if (!hasHadBirthdayThisYear) calculatedAge--;
+        return calculatedAge;
+    })();
 
     const togglePopularHobby = (label: string) => {
         setHobbies((prev) => {
