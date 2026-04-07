@@ -3,9 +3,16 @@
 
 import { useState, useRef, useEffect } from 'react'
 
+interface School {
+    id: number,
+    name: string,
+    type: string,
+    isPrivate: boolean
+}
+
 
 interface Props {
-    topic: string[]
+    topic: School[]
     value: string
     onChange: (val: string) => void
 }
@@ -16,10 +23,9 @@ export default function Combobox({ topic, value, onChange }: Props) {
     const ref = useRef<HTMLDivElement>(null)
 
     const filtered = topic.filter(s =>
-        s.toLowerCase().includes(query.toLowerCase())
+        s.name.toLowerCase().includes(query.toLowerCase())
     )
 
-    // Close on outside click
     useEffect(() => {
         const handler = (e: MouseEvent) => {
             if (ref.current && !ref.current.contains(e.target as Node)) {
@@ -39,7 +45,7 @@ export default function Combobox({ topic, value, onChange }: Props) {
                 className="p-2 border w-full"
                 onChange={(e) => {
                     setQuery(e.target.value)
-                    onChange('') // clear selection while typing
+                    onChange('')
                     setOpen(true)
                 }}
                 onFocus={() => setOpen(true)}
@@ -48,15 +54,15 @@ export default function Combobox({ topic, value, onChange }: Props) {
                 <ul className="absolute z-50 w-full bg-white border mt-1 rounded shadow max-h-45 overflow-y-auto">
                     {filtered.map(school => (
                         <li
-                            key={school}
+                            key={school.id}
                             className="px-3 py-2 hover:bg-blue-50 cursor-pointer text-sm"
                             onMouseDown={() => {
-                                onChange(school)
-                                setQuery(school)
+                                onChange(school.name)
+                                setQuery(school.name)
                                 setOpen(false)
                             }}
                         >
-                            {school}
+                            {school.name}
                         </li>
                     ))}
                 </ul>
